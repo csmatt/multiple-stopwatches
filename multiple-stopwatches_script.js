@@ -188,7 +188,7 @@ function clear(sw) {
 }
 
 function removeStopwatch(toRemove) {
-	let swIndex = stopwatchArray.findIndex(sw => toRemove.id === sw.id)
+	let swIndex = stopwatchArray.findIndex(sw => toRemove.id === sw.id.toString())
 	let sw = stopwatchArray[swIndex];
 	stopwatchArray.splice(swIndex, 1);
 	allStopwatches.removeChild(toRemove);
@@ -311,7 +311,7 @@ function removeKeybind(key) {
 }
 
 function nameChangeEvent(e) {
-	let stopwatchChanged = stopwatchArray.find(sw => getParentStopwatch(e.target).id === sw.id);
+	let stopwatchChanged = stopwatchArray.find(sw => getParentStopwatch(e.target).id === sw.id.toString());
 	if (stopwatchChanged) {
 		stopwatchChanged.name = e.target.value;
 	}
