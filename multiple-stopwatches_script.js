@@ -78,7 +78,7 @@ function saveToLocalStorage() {
 	localStorage.setItem("stopWatches", JSON.stringify(stopwatchArray.map(({stopwatch, timeButton, ...rest}) => rest)));
 }
 
-function initFromLocalStorage() {
+window.onload = function initFromLocalStorage() {
 	const localStorageStopwatches = localStorage.get(LOCAL_STORAGE_KEY);
 	if (localStorageStopwatches) {
 		JSON.parse(localStorageStopwatches).forEach((lssw) => {
@@ -86,8 +86,6 @@ function initFromLocalStorage() {
 		})
 	}
 }
-
-window.onload(initFromLocalStorage);
 
 function addStopwatch(passedInSw) {
 	let newStopwatch = template.cloneNode(true);
