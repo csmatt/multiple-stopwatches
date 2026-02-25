@@ -19,6 +19,8 @@ let numStopwatches = 0;
 let numIds = 1;
 let dragged;
 
+const LOCAL_STORAGE_KEY = "STOP_WATCHES";
+
 addStopwatchBtn.addEventListener('click', addStopwatch);
 window.addEventListener('keydown', keyDownEvent);
 removeAll.addEventListener('click', () => {
@@ -72,9 +74,23 @@ addStopwatch();
 
 setInterval(updateStopwatches, 10);
 
-function addStopwatch() {
+function saveToLocalStorage() {
+	localStorage.setItem("stopWatches", stopwatchArray.map(({stopwatch, timeButton, ...rest}) => rest));
+}
+
+function initFromLocalStorag() {
+	const localStorageStopwatches = localStorage.get(LOCAL_STORAGE_KEY);
+	if (localStorageStopwatches) {
+		JSON.parse(localStorageStopwatches).forEach((lssw) => {
+			addStopwatch(lssw);
+		})
+	}
+}
+
+function addStopwatch(passedInSw) {
 	let newStopwatch = template.cloneNode(true);
-	newStopwatch.id = numIds.toString();
+	const sw = passedInSw ?? {id: numIds, prevTime: 0, startTime: 0, dropCount: 0};
+	newStopwatch.id = sw.id;
 
 	let newKeybind = newStopwatch.querySelector('.keybind input');
 	newKeybind.addEventListener('change', keybindChangeEvent);
@@ -86,7 +102,7 @@ function addStopwatch() {
 	newTimeButton.addEventListener('click', clickTimeButtonEvent);
 
 	let newName = newStopwatch.querySelector('.name');
-	newName.value = 'Stopwatch ' + (numIds);
+	newName.value = 'Stopwatch ' + (newStopwatch.id);
 	newName.addEventListener('change', nameChangeEvent);
 	newName.addEventListener('focus', e => disableDrag(newStopwatch));
 	newName.addEventListener('focusout', e => enableDrag(newStopwatch));
@@ -99,14 +115,12 @@ function addStopwatch() {
 
 	addDragEvents(newStopwatch);
 
-	let newStopwatchObj = {id: numIds.toString(),
+	let newStopwatchObj = {
 						name: newName.value,
 						stopwatch: newStopwatch,
-						keybind: numIds <= 10 ? (numIds % 10).toString() : '',
+						keybind: newStopwatch.id <= 10 ? (newStopwatch.id % 10).toString() : '',
 						timeButton: newTimeButton,
-						prevTime: 0,
-						startTime: 0,
-						dropCount: 0,
+						...sw
 						};
 	stopwatchArray.push(newStopwatchObj);
 	allStopwatches.insertBefore(newStopwatch, finalBlock);
@@ -190,6 +204,7 @@ function removeStopwatch(toRemove) {
 		}
 	}
 	numStopwatches--;
+	saveToLocalStorage();
 }
 
 function updateMacroString(key) {
@@ -246,6 +261,7 @@ function updateStopwatches() {
 		let dur = (new Date() - going[i].startTime) / 1000;
 		going[i].timeButton.textContent = parseFloat(Math.round((+going[i].prevTime + dur) * 100) / 100).toFixed(2); //round to 2 decimal places
 	}
+	saveToLocalStorage();
 }
 
 function keyDownEvent(e) {
@@ -304,6 +320,7 @@ function nameChangeEvent(e) {
 			updateMacroString(key);
 		}
 	}
+	saveToLocalStorage();
 }
 
 function addMacroKeybind() {
