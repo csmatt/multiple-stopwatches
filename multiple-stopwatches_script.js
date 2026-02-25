@@ -79,7 +79,7 @@ function saveToLocalStorage() {
 }
 
 window.onload = function initFromLocalStorage() {
-	const localStorageStopwatches = localStorage.get(LOCAL_STORAGE_KEY);
+	const localStorageStopwatches = localStorage.getItem(LOCAL_STORAGE_KEY);
 	if (localStorageStopwatches) {
 		JSON.parse(localStorageStopwatches).forEach((lssw) => {
 			addStopwatch(lssw);
