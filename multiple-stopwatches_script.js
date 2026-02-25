@@ -75,7 +75,7 @@ addStopwatch();
 setInterval(updateStopwatches, 10);
 
 function saveToLocalStorage() {
-	localStorage.setItem("stopWatches", JSON.stringify(stopwatchArray.map(({stopwatch, timeButton, ...rest}) => rest)));
+	localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(stopwatchArray.map(({stopwatch, timeButton, ...rest}) => rest)));
 }
 
 window.onload = function initFromLocalStorage() {
