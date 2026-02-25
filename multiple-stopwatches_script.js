@@ -82,7 +82,7 @@ function initFromLocalStorage() {
 	const localStorageStopwatches = localStorage.get(LOCAL_STORAGE_KEY);
 	if (localStorageStopwatches) {
 		JSON.parse(localStorageStopwatches).forEach((lssw) => {
-			addStopwatch({...lssw, startTime: lssw.startTime)});
+			addStopwatch(lssw);
 		})
 	}
 }
