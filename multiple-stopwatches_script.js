@@ -78,14 +78,16 @@ function saveToLocalStorage() {
 	localStorage.setItem("stopWatches", JSON.stringify(stopwatchArray.map(({stopwatch, timeButton, ...rest}) => rest)));
 }
 
-function initFromLocalStorag() {
+function initFromLocalStorage() {
 	const localStorageStopwatches = localStorage.get(LOCAL_STORAGE_KEY);
 	if (localStorageStopwatches) {
 		JSON.parse(localStorageStopwatches).forEach((lssw) => {
-			addStopwatch(lssw);
+			addStopwatch({...lssw, startTime: lssw.startTime)});
 		})
 	}
 }
+
+window.onload(initFromLocalStorage);
 
 function addStopwatch(passedInSw) {
 	let newStopwatch = template.cloneNode(true);
@@ -250,7 +252,6 @@ function clickTimeButtonEvent(e) {
 	let stopwatchObj = stopwatchArray.find(sw => e.target === sw.timeButton);
 	if (stopwatchObj) {
 		stopwatchObj.startTime = new Date();
-		stopwatchObj.prevTime = stopwatchObj.timeButton.textContent;
 	}
 }
 
